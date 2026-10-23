@@ -613,6 +613,22 @@ Po zdefiniowaniu możesz użyć tego, gdziekolwiek jest to potrzebne:
 ```{r}
 my_function(a=2:4, b=6:8)
 ```
+funkcja
+```{r}
+standaryzacja <- function(x){
+  srednia = mean(x)
+  odchyl = sd(x)
+  z = (x - srednia)/odchyl
+  return(x)
+}
+```
+
+```{r}
+a <- c(12,15,0,1,2,-3)
+z <- standaryzacja(a)
+boxplot(z)
+```
+
 
 Zmienne zdefiniowane wewnątrz funkcji są dostępne tylko wewnątrz tej funkcji i nie są dostępne poza nią, chyba że zostaną zwrócone:
 
