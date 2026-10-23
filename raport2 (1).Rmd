@@ -765,7 +765,7 @@ posortuj od najdroższych, pamiętając rówież o tym, żeby były jak najwięk
 ```{r}
 dane %>%
   mutate(dane, m2 = sq__ft*0.093) %>%
-  filter(m2<1076 & beds == 1 & baths == 1) %>%
+  filter(m2<100 & beds == 1 & baths == 1) %>%
   group_by(type) %>%
   arrange(desc(price),desc(m2)) %>%
   select(street,city,zip,state,m2,price) %>%
