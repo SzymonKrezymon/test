@@ -1,0 +1,82 @@
+---
+title: "opis2"
+output: html_document
+---
+
+```{r cbos-wczytanie}
+library(haven)
+library(magrittr)
+library(dplyr )
+adres_cbos <- paste0("https://raw.githubusercontent.com/kflisikowsky/sad/",
+                     "main/data/CBOS_201733_331_SPSS.sav")
+plik_cbos <- tempfile(fileext = ".sav")
+download.file(adres_cbos, plik_cbos, mode = "wb", quiet = TRUE)
+cbos_raw <- read_sav(plik_cbos)
+unlink(plik_cbos)
+
+cbos <- cbos_raw %>% transmute(
+  plec = as_factor(plec),
+  miejscowosc = as_factor(klm6),
+  kierunek = as_factor(q24),
+  prognoza = as_factor(q25),
+  wyksztalcenie = as_factor(q15)
+)
+dim(cbos)
+head(cbos)
+```
+View(cbos)
+### Zadanie 5 — poznaj respondentów
+
+Sprawdź liczbę obserwacji i braków. Przygotuj tabelę liczności i odsetków dla `plec` oraz `miejscowosc`. Jaki odsetek ankietowanych mieszkał na wsi, a jaki w miastach liczących co najmniej 500 tys. mieszkańców? Licz odsetki względem liczby **niebrakujących odpowiedzi** w danej zmiennej i podaj użyty mianownik.
+
+```{r cbos-zad-5}
+# WASZE ROZWIĄZANIE
+# count(), mutate(procent = 100 * n / sum(n)), filter(!is.na(...))
+
+# 1. Ogólna liczba obserwacji (wierszy)
+nrow(cbos)
+
+# 2. Liczba braków danych (NA) dla płci i miejscowości
+sum(is.na(cbos$plec))
+sum(is.na(cbos$miejscowosc))
+
+# 3. Tabele liczności (ile osób) - automatycznie pomijają braki danych
+table(cbos$plec)
+table(cbos$miejscowosc)
+
+# 4. Tabele odsetków (procenty) - automatycznie pomijają braki danych
+prop.table(table(cbos$plec)) * 100
+prop.table(table(cbos$miejscowosc)) * 100
+
+
+```
+
+
+### Zadanie 6 — jak oceniano kierunek zmian w kraju?
+
+Oblicz liczebności i odsetki odpowiedzi na pytanie `kierunek`. Pokaż osobno odpowiedzi „W dobrym”, „W złym”, „Trudno powiedzieć” i odmowy, jeśli występują. Która odpowiedź była najczęstsza?
+
+Następnie policz udział odpowiedzi „W dobrym” **tylko wśród osób, które wybrały „W dobrym” albo „W złym”**. Porównaj go z odsetkiem w całej próbie. Wyjaśnij różnicę w mianowniku.
+
+```{r cbos-zad-6}
+# WASZE ROZWIĄZANIE
+# count(kierunek), filter(kierunek %in% c("W dobrym", "W złym"))
+
+# 1. Pełna tabela liczności dla zmiennej 'kierunek'
+table(cbos$kierunek)
+
+# 2. Pełna tabela odsetków (w procentach) dla całej próby
+prop.table(table(cbos$kierunek)) * 100
+
+# 3. Udział odpowiedzi "W dobrym" TYLKO wśród osób zdecydowanych
+# Tworzymy podtabelę wyciągając dokładnie takie nazwy, jakie są w bazie:
+tabela_zdecydowani <- table(cbos$kierunek)[c("W dobrym", "W złym")]
+
+# Wyświetlamy liczebności dla osób zdecydowanych
+tabela_zdecydowani
+
+# Wyświetlamy procenty dla osób zdecydowanych
+prop.table(tabela_zdecydowani) * 100
+
+```
+
