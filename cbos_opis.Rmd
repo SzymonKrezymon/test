@@ -23,3 +23,4 @@ names(nier) <- c("id", "wiek_lat", "metro_m", "sklepy", "lat", "lon",
                  "cena_10k_twd_ping")
 head(nier)
 ``
+
