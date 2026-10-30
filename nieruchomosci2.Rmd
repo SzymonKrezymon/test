@@ -22,4 +22,23 @@ nier <- raw_nier
 names(nier) <- c("id", "wiek_lat", "metro_m", "sklepy", "lat", "lon",
                  "cena_10k_twd_ping")
 head(nier)
+``
+```
+
+```{r zad 1}
+dim(nier)
+str(nier)
+summary(nier)
+colSums(is.na(nier))
+anyDuplicated(nier$id)
+```
+
+`
+```{r zad2}
+nier %>%
+  mutate(cena_twd_m2 = cena_10k_twd_ping * 10000 / 3.3)
+summarise(mean(nier$cena_twd_m2), median(nier$cena_twd_m2), min(nier$cena_twd_m2), max(nier$cena_twd_m2))
+arrange(desc(nier$cena_twd_m2)) %>%
+select(nier$cena_twd_m2, nier$wiek_lat, nier$metro_m, nier$sklepy) %>%
+slice_head(n=6)
 ```
